@@ -22,23 +22,23 @@ if not os.path.exists(CSV_FILE):
 @app.route("/weather", methods=["POST"])
 def weather():
     data = request.get_json()
+
+    if data is None:
+        return "Invalid JSON", 400
+
     print("Received:", data)
 
-    try:
-        with open("weather.csv", "a", newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow([
-                datetime.now().isoformat(),
-                data["temperature"],
-                data["humidity"],
-                data["pressure"],
-                data["light"]
-            ])
-        print("Saved to CSV")
-    except Exception as e:
-        print("CSV error:", e)
+    with open(CSV_FILE, "a", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            datetime.now().isoformat(),
+            data["temperature"],
+            data["humidity"],
+            data["pressure"],
+            data["light"]
+        ])
 
-    return "OK"
+    return "OK", 200
 
 @app.route("/")
 def index():
