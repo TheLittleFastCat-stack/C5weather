@@ -22,30 +22,24 @@ conn.commit()
 conn.close()
 
 
+import csv
+from datetime import datetime
+
 @app.route("/weather", methods=["POST"])
 def weather():
+    data = request.get_json()
 
-    data = request.json
-
-    conn = sqlite3.connect("weather.db")
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        INSERT INTO weather
-        (temperature, humidity, pressure, light)
-        VALUES (?,?,?,?)
-    """, (
-        data["temperature"],
-        data["humidity"],
-        data["pressure"],
-        data["light"]
-    ))
-
-    conn.commit()
-    conn.close()
+    with open("weather.csv", "a", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            datetime.now().isoformat(),
+            data["temperature"],
+            data["humidity"],
+            data["pressure"],
+            data["light"]
+        ])
 
     return "OK"
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

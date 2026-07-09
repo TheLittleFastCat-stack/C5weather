@@ -18,8 +18,19 @@ BH1750 bh;
 #define uS_TO_S_FACTOR 1000000  /* Konverzní faktor pro mikrosekundy (1 sekunda = 1 000 000 mikrosekund) */
 #define log_delay 1800
 
+const char* ssid = "O2-Internet-110";
+const char* password = "BRW8QXcGdP";
+
 void setup() {
   Serial.begin(115200);
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  Serial.print("Connecting");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
 
   Serial.println("power on");
 
@@ -71,7 +82,7 @@ void setup() {
 
   HTTPClient http;
 
-  http.begin("http://192.168.1.100:5000/weather");
+  http.begin("http://10.0.0.94:5000/weather");
   http.addHeader("Content-Type", "application/json");
 
   String json = "{";
