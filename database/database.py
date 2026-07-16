@@ -48,8 +48,8 @@ def weather():
     display.print(f"T:{data['temperature']:.1f}C")
     display.print(f" H:{data['humidity']:.0f}%")
     display.set_cursor(2, 1)
-    display.print(f"P:{data['pressure']:.0f}%")
-    display.print(f" L:{data['light']:.0f}%")
+    display.print(f"P:{data['pressure']:.0f}hPa")
+    display.print(f" L:{data['light']:.0f}lx")
 
     with open(CSV_FILE, "a", newline="") as f:
         writer = csv.writer(f)
