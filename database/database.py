@@ -1,11 +1,26 @@
+import sys
+print(sys.executable)
+print(sys.version)
+
 from flask import Flask, request
 from datetime import datetime
 import csv
 import os
 
+from ba63usb import BA63USB
+
 app = Flask(__name__)
 
 CSV_FILE = "weather.csv"
+
+devices = BA63USB.get()
+
+if not devices:
+    print("No BA63 display found.")
+    display = None
+else:
+    display = BA63USB(devices[0]["path"])
+
 
 # Create the CSV with a header if it doesn't exist
 if not os.path.exists(CSV_FILE):
@@ -27,6 +42,10 @@ def weather():
         return "Invalid JSON", 400
 
     print("Received:", data)
+
+    display.clear()
+    display.set_cursor(1, 1)
+    display.print(str(data))
 
     with open(CSV_FILE, "a", newline="") as f:
         writer = csv.writer(f)
